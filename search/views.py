@@ -15,9 +15,9 @@ def index(request):
                     'P':'Paragraph'
                 }
             ]'''
-            return render(request,'index.html',{'form':form,'SearchResult':SearchResult})
+            return render(request,'index.html',{'SearchResult':SearchResult,'Searched':True})
 
 
     else:
         form=SearchForm()
-        return render(request,'index.html',{'form':form})
+        return render(request,'index.html',{'form':form,'Searched':False})

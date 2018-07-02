@@ -40,8 +40,9 @@
 <body>
     <div class="container col-8 text-center align-middle mt-5">
         <div class="mb-4">
-            <img src="https://res.cloudinary.com/dcr7dcays/image/upload/v1529143715/search-engine_1.png" alt="">
+            <a href="/" data-toggle="tooltip" title="click for a new search"><img src="https://res.cloudinary.com/dcr7dcays/image/upload/v1529143715/search-engine_1.png" alt=""></a>
         </div>
+        {% if Searched == False %}
         <form action="" method="post">
 
             {% csrf_token %}
@@ -56,6 +57,7 @@
             </div>
             <input type="submit" value="Submit" />
         </form>
+        {% endif %}
     </div>
     <div class="container text-center small mt-3">
         {% for o in SearchResult %}
