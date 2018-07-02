@@ -20,6 +20,21 @@
         p.rtl{
             direction: rtl
         }
+        ::-webkit-input-placeholder {
+        text-align: center;
+        }
+
+        :-moz-placeholder { /* Firefox 18- */
+        text-align: center;  
+        }
+
+        ::-moz-placeholder {  /* Firefox 19+ */
+        text-align: center;  
+        }
+
+        :-ms-input-placeholder {  
+        text-align: center; 
+        }
     </style>
 </head>
 <body>
@@ -28,14 +43,23 @@
             <img src="https://res.cloudinary.com/dcr7dcays/image/upload/v1529143715/search-engine_1.png" alt="">
         </div>
         <form action="" method="post">
+
             {% csrf_token %}
-            {{ form }}
+            <div class="my-2">
+                <input type="text" name="search" placeholder="Text To search">
+            </div>
+            <div class="my-2">
+                <input type="text" name="depth" placeholder="Depth of Search">
+            </div>
+            <div class="my-2">
+                <input type="text" name="site" placeholder="Site">
+            </div>
             <input type="submit" value="Submit" />
         </form>
     </div>
     <div class="container text-center small mt-3">
         {% for o in SearchResult %}
-        <div>
+        <div class="my-4">
             <a class="text-primary" href="{{o.A}}"><h2>{{o.H}}</h2></a>
             <p class="text-success">{{o.A}}</p>
             <p class="rtl">{{o.P}}</p>

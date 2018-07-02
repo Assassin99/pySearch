@@ -4,13 +4,13 @@ import re
 from urllib.parse import urljoin
 class Crawler:
     #sites to search text in in:
-    sites=['https://www.mehrnews.com/','http://www.irna.ir/','http://www.farsnews.com/','https://www.isna.ir/','http://aftabnews.ir']
-    #for storing links to visit later
+    #sites=['https://www.mehrnews.com/','http://www.irna.ir/','http://www.farsnews.com/','https://www.isna.ir/']    #for storing links to visit later
+    sites=[]
     unVisitedLinks =[]
     visitedLinks =[]    
     resultPages=[]
     links = []
-    depthLimit=1000
+    depthLimit=0
 
     #correct the found URL if it's relative
     def correctURL(self,link,domain): 
@@ -33,9 +33,10 @@ class Crawler:
         return False
 
     #main search function
-    def search(self,text):
-        i=0
-        
+    def search(self,text,depth,site):
+        self.depthLimit=int(depth)
+        self.sites.append(site)
+
         for startPage in self.sites:
             depth=0
             self.unVisitedLinks.append(startPage)
@@ -51,7 +52,7 @@ class Crawler:
 
                 try:
                     page = requests.get(currentPage)
-                    i+=1
+                    
                     print(currentPage)
                 except Exception as e:
                     print(str(e))
@@ -61,7 +62,7 @@ class Crawler:
 
                 #add page to results if text exists in it
                 if (self.TextExistsInPage(soup,text)):
-                    htag=''    
+                    htag=''
                     ptag=''
                     H1=soup.find_all('h1')
                     for h1 in H1:
@@ -71,8 +72,7 @@ class Crawler:
                     for p in P:
                         if(text in p.get_text()):
                             ptag=p.get_text()
-                    if htag!='' and ptag!='':
-                        self.resultPages.append({'A':currentPage,'P':ptag,'H':htag})
+                    self.resultPages.append({'A':currentPage,'P':ptag,'H':htag})
                                     
 
                 if 'https://' in startPage:
@@ -80,17 +80,25 @@ class Crawler:
                 else:
                     links=soup.findAll('a', attrs={'href': re.compile("^http://|^/")})
 
+
                 #if depth
                 #and addedlinks<self.searchDepth
                 #iterate through links
                 for link in links:
                     linkText=link.get('href')
+                    linkText=self.correctURL(linkText, currentPage) #correct relative URLs
+
+                    if(text in link.get_text() ):
+                        l={'A':linkText,'H':link.get_text()}
+                        if l not in self.resultPages:
+                            self.resultPages.append(l)
+
                     if (linkText not in self.unVisitedLinks 
                         and (startPage in linkText or linkText.startswith("/")) # if link does not point to other sites
                         and '/ads/' not in linkText # not an advertiseing link
-                        and len(link.get('href'))>0):  #not an empty link 
+                        and len(link.get('href'))>0
+                        and 'facebook' not in linkText):  #not an empty link 
 
-                        linkText=self.correctURL(linkText, currentPage) #correct relative URLs
                         self.unVisitedLinks.append(linkText)
                 depth+=1
 
