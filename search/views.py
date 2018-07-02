@@ -7,6 +7,7 @@ def index(request):
     if request.method=="POST":
         form = SearchForm(request.POST)
         if form.is_valid():
+            SearchResult=[]
             SearchResult=Crawler().search(form.cleaned_data['search'],form.cleaned_data['depth'],form.cleaned_data['site'])
             '''SearchResult=[
                 {
